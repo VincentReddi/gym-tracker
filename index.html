@@ -274,7 +274,7 @@ select option { background: var(--surface2); }
 </main>
 
 <!-- TOKEN MODAL -->
-<div id="token-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:center;justify-content:center;">
+<div id="token-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;">
   <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;width:100%;max-width:420px;margin:1rem;">
     <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:600;margin-bottom:8px;">GitHub Token einrichten</div>
     <div style="font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;">
@@ -366,6 +366,7 @@ async function pushToGist() {
 }
 
 async function pullFromGist() {
+  if (!GIST_TOKEN) { openTokenModal(); return false; }
   if (!gistId) return false;
   setSyncStatus('Laden...', 'var(--text2)');
   try {
@@ -757,6 +758,7 @@ if (!GIST_TOKEN) {
 } else {
   pullFromGist().then(loaded => {
     if (loaded) { renderExercises(); renderDashboard(); }
+    else { pushToGist(); }
   });
 }
 </script>
