@@ -339,6 +339,7 @@ function saveToken() {
 
 async function pushToGist() {
   if (!GIST_TOKEN) { openTokenModal(); return; }
+  gistId = CORRECT_GIST_ID;
   setSyncStatus('Speichern...', 'var(--text2)');
   const data = JSON.stringify({ exercises, workouts }, null, 2);
   try {
@@ -394,9 +395,7 @@ async function findGistId() {
 
 async function pullFromGist() {
   if (!GIST_TOKEN) { openTokenModal(); return false; }
-  setSyncStatus('Suche Gist...', 'var(--text2)');
-  await findGistId();
-  if (!gistId) return false;
+  gistId = CORRECT_GIST_ID;
   setSyncStatus('Laden...', 'var(--text2)');
   try {
     const res = await fetch(`https://api.github.com/gists/${gistId}`, {
