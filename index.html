@@ -365,8 +365,29 @@ async function pushToGist() {
   }
 }
 
+async function findGistId() {
+  try {
+    const res = await fetch('https://api.github.com/gists?per_page=100', {
+      headers: { Authorization: `token ${GIST_TOKEN}` }
+    });
+    if (!res.ok) return null;
+    const list = await res.json();
+    const found = list.find(g => g.files && g.files[GIST_FILENAME]);
+    if (found) {
+      gistId = found.id;
+      localStorage.setItem('gym_gist_id', gistId);
+      return gistId;
+    }
+  } catch(e) {}
+  return null;
+}
+
 async function pullFromGist() {
   if (!GIST_TOKEN) { openTokenModal(); return false; }
+  if (!gistId) {
+    setSyncStatus('Suche Gist...', 'var(--text2)');
+    await findGistId();
+  }
   if (!gistId) return false;
   setSyncStatus('Laden...', 'var(--text2)');
   try {
