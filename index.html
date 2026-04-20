@@ -305,8 +305,10 @@ let dashChartMode = 'weight';
 let dashChartInstance = null;
 
 const GIST_FILENAME = 'gym_tracker_data.json';
+const CORRECT_GIST_ID = 'd57e77f3923c08c3e8b28307e2c7d12a';
 let GIST_TOKEN = localStorage.getItem('gym_token') || '';
-let gistId = localStorage.getItem('gym_gist_id') || null;
+let gistId = CORRECT_GIST_ID;
+localStorage.setItem('gym_gist_id', CORRECT_GIST_ID);
 
 function setSyncStatus(msg, color) {
   const el = document.getElementById('sync-status');
