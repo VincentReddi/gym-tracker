@@ -129,6 +129,10 @@ select option { background: var(--surface2); }
 
 <header>
   <h1>GYM<span>TRACKER</span></h1>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
+    <button onclick="syncNow()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;" title="Mit GitHub Gist synchronisieren">↑↓ Sync</button>
+  </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
     <button class="tab" onclick="switchTab('exercises')">Übungen</button>
@@ -282,9 +286,82 @@ let chartInstance = null;
 let dashChartMode = 'weight';
 let dashChartInstance = null;
 
+const GIST_TOKEN = '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';
+const GIST_FILENAME = 'gym_tracker_data.json';
+let gistId = localStorage.getItem('gym_gist_id') || null;
+
+function setSyncStatus(msg, color) {
+  const el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.style.color = color || 'var(--text3)';
+}
+
+async function pushToGist() {
+  setSyncStatus('Speichern...', 'var(--text2)');
+  const data = JSON.stringify({ exercises, workouts }, null, 2);
+  try {
+    let res;
+    if (gistId) {
+      res = await fetch(`https://api.github.com/gists/${gistId}`, {
+        method: 'PATCH',
+        headers: { Authorization: `token ${GIST_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ files: { [GIST_FILENAME]: { content: data } } })
+      });
+    } else {
+      res = await fetch('https://api.github.com/gists', {
+        method: 'POST',
+        headers: { Authorization: `token ${GIST_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: 'Gym Tracker Data', public: false, files: { [GIST_FILENAME]: { content: data } } })
+      });
+      const json = await res.json();
+      gistId = json.id;
+      localStorage.setItem('gym_gist_id', gistId);
+    }
+    if (res.ok) {
+      setSyncStatus('Gespeichert ' + new Date().toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'}), 'var(--success)');
+    } else {
+      setSyncStatus('Fehler beim Speichern', 'var(--danger)');
+    }
+  } catch(e) {
+    setSyncStatus('Netzwerkfehler', 'var(--danger)');
+  }
+}
+
+async function pullFromGist() {
+  if (!gistId) return false;
+  setSyncStatus('Laden...', 'var(--text2)');
+  try {
+    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+      headers: { Authorization: `token ${GIST_TOKEN}` }
+    });
+    if (!res.ok) { setSyncStatus('Gist nicht gefunden', 'var(--danger)'); return false; }
+    const json = await res.json();
+    const content = json.files[GIST_FILENAME]?.content;
+    if (!content) return false;
+    const data = JSON.parse(content);
+    exercises = data.exercises || [];
+    workouts  = data.workouts  || [];
+    localStorage.setItem('gym_exercises', JSON.stringify(exercises));
+    localStorage.setItem('gym_workouts',  JSON.stringify(workouts));
+    setSyncStatus('Geladen ' + new Date().toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'}), 'var(--success)');
+    return true;
+  } catch(e) {
+    setSyncStatus('Fehler beim Laden', 'var(--danger)');
+    return false;
+  }
+}
+
+async function syncNow() {
+  await pullFromGist();
+  renderExercises();
+  renderDashboard();
+  await pushToGist();
+}
+
 function save() {
   localStorage.setItem('gym_exercises', JSON.stringify(exercises));
   localStorage.setItem('gym_workouts',  JSON.stringify(workouts));
+  pushToGist();
 }
 
 function toast(msg) {
@@ -637,6 +714,9 @@ function clearAllData() {
 /* ---- INIT ---- */
 renderExercises();
 renderDashboard();
+pullFromGist().then(loaded => {
+  if (loaded) { renderExercises(); renderDashboard(); }
+});
 </script>
 </body>
 </html>
