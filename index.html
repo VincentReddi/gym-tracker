@@ -133,6 +133,7 @@ select option { background: var(--surface2); }
     <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
     <button onclick="syncNow()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Sync</button>
     <button onclick="openTokenModal()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Token</button>
+    <button onclick="alert('GistID: ' + (localStorage.getItem('gym_gist_id')||'keine'))" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Debug</button>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
