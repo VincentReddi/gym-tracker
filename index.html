@@ -328,8 +328,9 @@ function saveToken() {
   if (!val) { alert('Bitte Token eingeben!'); return; }
   GIST_TOKEN = val;
   localStorage.setItem('gym_token', val);
+  gistId = null;
+  localStorage.removeItem('gym_gist_id');
   closeTokenModal();
-  setSyncStatus('Token gespeichert', 'var(--success)');
   syncNow();
 }
 
@@ -370,7 +371,10 @@ async function findGistId() {
     const res = await fetch('https://api.github.com/gists?per_page=100', {
       headers: { Authorization: `token ${GIST_TOKEN}` }
     });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      setSyncStatus('Fehler ' + res.status + ' beim Suchen', 'var(--danger)');
+      return null;
+    }
     const list = await res.json();
     const found = list.find(g => g.files && g.files[GIST_FILENAME]);
     if (found) {
@@ -378,7 +382,10 @@ async function findGistId() {
       localStorage.setItem('gym_gist_id', gistId);
       return gistId;
     }
-  } catch(e) {}
+    setSyncStatus('Kein Gist gefunden', 'var(--text2)');
+  } catch(e) {
+    setSyncStatus('Netzwerkfehler: ' + e.message, 'var(--danger)');
+  }
   return null;
 }
 
@@ -412,9 +419,9 @@ async function pullFromGist() {
 }
 
 async function syncNow() {
-  await pullFromGist();
-  renderExercises();
-  renderDashboard();
+  setSyncStatus('Sync...', 'var(--text2)');
+  const pulled = await pullFromGist();
+  if (pulled) { renderExercises(); renderDashboard(); }
   await pushToGist();
 }
 
