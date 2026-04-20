@@ -131,7 +131,8 @@ select option { background: var(--surface2); }
   <h1>GYM<span>TRACKER</span></h1>
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
-    <button onclick="syncNow()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;" title="Mit GitHub Gist synchronisieren">↑↓ Sync</button>
+    <button onclick="syncNow()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Sync</button>
+    <button onclick="openTokenModal()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;" title="Token einrichten">Token</button>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
@@ -272,6 +273,22 @@ select option { background: var(--surface2); }
 
 </main>
 
+<!-- TOKEN MODAL -->
+<div id="token-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;width:100%;max-width:420px;margin:1rem;">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:600;margin-bottom:8px;">GitHub Token einrichten</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;">
+      Erstelle einen Token auf <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--accent);">github.com/settings/tokens</a> (classic, nur <strong>gist</strong> Scope) und füge ihn hier ein. Er wird nur lokal gespeichert.
+    </div>
+    <label>Personal Access Token</label>
+    <input type="password" id="token-input" placeholder="ghp_..." style="margin-bottom:1rem;" />
+    <div style="display:flex;gap:8px;">
+      <button onclick="saveToken()" style="flex:1;padding:9px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0d0d0d;font-weight:600;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Speichern</button>
+      <button onclick="closeTokenModal()" style="padding:9px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
 <div id="hm-tooltip"></div>
 
 <button class="reset-btn" onclick="clearAllData()">Alle Daten löschen</button>
@@ -286,8 +303,8 @@ let chartInstance = null;
 let dashChartMode = 'weight';
 let dashChartInstance = null;
 
-const GIST_TOKEN = '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';
 const GIST_FILENAME = 'gym_tracker_data.json';
+let GIST_TOKEN = localStorage.getItem('gym_token') || '';
 let gistId = localStorage.getItem('gym_gist_id') || null;
 
 function setSyncStatus(msg, color) {
@@ -296,7 +313,28 @@ function setSyncStatus(msg, color) {
   el.style.color = color || 'var(--text3)';
 }
 
+function openTokenModal() {
+  const inp = document.getElementById('token-input');
+  inp.value = GIST_TOKEN;
+  document.getElementById('token-modal').style.display = 'flex';
+}
+
+function closeTokenModal() {
+  document.getElementById('token-modal').style.display = 'none';
+}
+
+function saveToken() {
+  const val = document.getElementById('token-input').value.trim();
+  if (!val) { alert('Bitte Token eingeben!'); return; }
+  GIST_TOKEN = val;
+  localStorage.setItem('gym_token', val);
+  closeTokenModal();
+  setSyncStatus('Token gespeichert', 'var(--success)');
+  syncNow();
+}
+
 async function pushToGist() {
+  if (!GIST_TOKEN) { openTokenModal(); return; }
   setSyncStatus('Speichern...', 'var(--text2)');
   const data = JSON.stringify({ exercises, workouts }, null, 2);
   try {
@@ -714,9 +752,13 @@ function clearAllData() {
 /* ---- INIT ---- */
 renderExercises();
 renderDashboard();
-pullFromGist().then(loaded => {
-  if (loaded) { renderExercises(); renderDashboard(); }
-});
+if (!GIST_TOKEN) {
+  openTokenModal();
+} else {
+  pullFromGist().then(loaded => {
+    if (loaded) { renderExercises(); renderDashboard(); }
+  });
+}
 </script>
 </body>
 </html>
