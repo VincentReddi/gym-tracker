@@ -132,8 +132,7 @@ select option { background: var(--surface2); }
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
     <button onclick="syncNow()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Sync</button>
-    <button onclick="openTokenModal()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;" title="Token einrichten">Token</button>
-    <button onclick="alert('GistID: ' + (localStorage.getItem('gym_gist_id')||'keine'))" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Debug</button>
+    <button onclick="openTokenModal()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Token</button>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
@@ -392,10 +391,8 @@ async function findGistId() {
 
 async function pullFromGist() {
   if (!GIST_TOKEN) { openTokenModal(); return false; }
-  if (!gistId) {
-    setSyncStatus('Suche Gist...', 'var(--text2)');
-    await findGistId();
-  }
+  setSyncStatus('Suche Gist...', 'var(--text2)');
+  await findGistId();
   if (!gistId) return false;
   setSyncStatus('Laden...', 'var(--text2)');
   try {
