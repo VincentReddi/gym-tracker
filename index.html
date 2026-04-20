@@ -116,12 +116,24 @@ select option { background: var(--surface2); }
 .toast { position: fixed; bottom: 1rem; right: 1rem; background: var(--accent); color: #0d0d0d; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; opacity: 0; transform: translateY(8px); transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 100; }
 
 @media (max-width: 620px) {
-  header { padding: 1rem; flex-direction: column; gap: 10px; align-items: flex-start; }
+  header { padding: 0.75rem 1rem; flex-direction: column; gap: 10px; align-items: flex-start; }
   .tabs { width: 100%; }
-  .tab { flex: 1; text-align: center; padding: 6px 4px; font-size: 11px; }
-  main { padding: 1rem; }
-  .grid2, .grid3 { grid-template-columns: 1fr; }
-  .set-grid { grid-template-columns: 40px 1fr 1fr 32px; }
+  .tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 11px; }
+  main { padding: 0.75rem; }
+  .grid2 { grid-template-columns: 1fr 1fr; }
+  .grid3 { grid-template-columns: 1fr; }
+  .card { padding: 1rem; }
+  .set-grid { grid-template-columns: 36px 1fr 1fr 30px; gap: 6px; }
+  .last-session-card { flex-direction: column; gap: 8px; }
+  .ls-right { text-align: left; display: flex; gap: 12px; align-items: center; }
+  .heatmap-cell { width: 11px; height: 11px; }
+  .hm-day-lbl { height: 11px; line-height: 11px; }
+  .chart-wrap { height: 180px; }
+  .log-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .log-meta { flex-direction: row !important; justify-content: space-between; width: 100%; }
+  .metric-val { font-size: 20px; }
+  .reset-btn { bottom: 0.75rem; left: 0.75rem; font-size: 11px; padding: 6px 10px; }
+  .toast { bottom: 0.75rem; right: 0.75rem; font-size: 12px; padding: 8px 14px; }
 }
 </style>
 </head>
@@ -129,12 +141,7 @@ select option { background: var(--surface2); }
 
 <header>
   <h1>GYM<span>TRACKER</span></h1>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
-    <button onclick="syncNow()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Sync</button>
-    <button onclick="openTokenModal()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Token</button>
-    <button onclick="alert('GistID: ' + (localStorage.getItem('gym_gist_id')||'keine'))" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Debug</button>
-  </div>
+  <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
     <button class="tab" onclick="switchTab('exercises')">Übungen</button>
