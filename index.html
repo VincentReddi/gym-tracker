@@ -466,6 +466,11 @@ function localDS(d) {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 
+function deDate(ds) {
+  const [y, m, d] = ds.split('-');
+  return `${d}.${m}.${y}`;
+}
+
 /* ---- DASHBOARD ---- */
 function renderDashboard() {
   const now = new Date();
@@ -590,7 +595,7 @@ function renderDashChart() {
     : data.map(w => Math.round(w.sets.reduce((a,s) => a+s.kg*s.reps, 0)));
   dashChartInstance = new Chart(ctx, {
     type: 'line',
-    data: { labels: data.map(w => w.date), datasets: [{ data: values, borderColor: '#c8ff00', backgroundColor: 'rgba(200,255,0,0.06)', pointBackgroundColor: '#c8ff00', pointBorderColor: '#0d0d0d', pointBorderWidth: 2, pointRadius: 5, tension: 0.35, fill: true }] },
+    data: { labels: data.map(w => deDate(w.date)), datasets: [{ data: values, borderColor: '#c8ff00', backgroundColor: 'rgba(200,255,0,0.06)', pointBackgroundColor: '#c8ff00', pointBorderColor: '#0d0d0d', pointBorderWidth: 2, pointRadius: 5, tension: 0.35, fill: true }] },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1f1f1f', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, titleColor: '#888', bodyColor: '#f0f0f0', padding: 10 } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#555', font: { size: 11 } } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#555', font: { size: 11 } } } } }
   });
 }
@@ -725,7 +730,7 @@ function renderHistory() {
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
         <div style="text-align:right;font-size:12px;color:var(--text2);">
-          <div class="log-date">${w.date}</div>
+          <div class="log-date">${deDate(w.date)}</div>
           <div>Vol: ${vol.toLocaleString('de')} kg | Max: ${maxKg} kg</div>
         </div>
         <button class="btn-ghost" onclick="deleteWorkout(${w.id})" title="Löschen">×</button>
@@ -770,7 +775,7 @@ function renderChart() {
     : data.map(w => Math.round(w.sets.reduce((a,s) => a+s.kg*s.reps, 0)));
   chartInstance = new Chart(ctx, {
     type: 'line',
-    data: { labels: data.map(w => w.date), datasets: [{ label: chartMode === 'weight' ? 'Max. Gewicht (kg)' : 'Volumen (kg)', data: values, borderColor: '#c8ff00', backgroundColor: 'rgba(200,255,0,0.06)', pointBackgroundColor: '#c8ff00', pointBorderColor: '#0d0d0d', pointBorderWidth: 2, pointRadius: 5, tension: 0.35, fill: true }] },
+    data: { labels: data.map(w => deDate(w.date)), datasets: [{ label: chartMode === 'weight' ? 'Max. Gewicht (kg)' : 'Volumen (kg)', data: values, borderColor: '#c8ff00', backgroundColor: 'rgba(200,255,0,0.06)', pointBackgroundColor: '#c8ff00', pointBorderColor: '#0d0d0d', pointBorderWidth: 2, pointRadius: 5, tension: 0.35, fill: true }] },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1f1f1f', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, titleColor: '#888', bodyColor: '#f0f0f0', padding: 10 } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#555', font: { size: 11 } } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#555', font: { size: 11 } } } } }
   });
   const max = Math.max(...values);
