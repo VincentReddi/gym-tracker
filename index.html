@@ -778,7 +778,7 @@ function renderChart() {
   const diff = values.length > 1 ? values[values.length-1] - values[0] : 0;
   metricsEl.innerHTML = `
     <div class="metric-card"><div class="metric-label">Bestleistung</div><div class="metric-val">${max} kg</div></div>
-    <div class="metric-card"><div class="metric-label">Ø Durchschnitt</div><div class="metric-val">${avg} kg</div></div>
+    <div class="metric-card"><div class="metric-label">Durchschnitt</div><div class="metric-val">${avg} kg</div></div>
     <div class="metric-card"><div class="metric-label">Fortschritt</div><div class="metric-val ${diff>=0?'stat-positive':'stat-negative'}">${diff>=0?'+':''}${diff} kg</div></div>
   `;
 }
