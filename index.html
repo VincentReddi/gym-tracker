@@ -158,7 +158,12 @@ select option { background: var(--surface2); }
     <div class="card">
       <div class="card-header">
         <span class="card-title">Trainingsaktivität</span>
-        <span style="font-size:12px;color:var(--text3);">letzte 26 Wochen</span>
+        <select id="heatmap-range" onchange="renderHeatmap()" style="width:auto;font-size:12px;padding:4px 8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text2);">
+          <option value="4">30 Tage</option>
+          <option value="13">3 Monate</option>
+          <option value="26" selected>6 Monate</option>
+          <option value="52">1 Jahr</option>
+        </select>
       </div>
       <div class="heatmap-wrap">
         <div id="heatmap-month-row" class="hm-month-row"></div>
@@ -467,7 +472,7 @@ function renderDashboard() {
   const thisMonth = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
   const mw = workouts.filter(w => w.date.startsWith(thisMonth));
   document.getElementById('dash-month-title').textContent = now.toLocaleDateString('de-DE', {month:'long', year:'numeric'});
-  document.getElementById('dash-total-sessions').textContent = mw.length;
+  document.getElementById('dash-total-sessions').textContent = new Set(mw.map(w => w.date)).size;
   document.getElementById('dash-total-vol').textContent = Math.round(mw.reduce((a,w) => a + w.sets.reduce((b,s) => b+s.kg*s.reps, 0), 0)).toLocaleString('de');
   document.getElementById('dash-total-ex').textContent = new Set(mw.map(w => w.exId)).size;
   renderHeatmap();
@@ -477,7 +482,8 @@ function renderDashboard() {
 }
 
 function renderHeatmap() {
-  const WEEKS = 26;
+  const sel = document.getElementById('heatmap-range');
+  const WEEKS = sel ? parseInt(sel.value) : 26;
   const today = new Date(); today.setHours(0,0,0,0);
   const todayDS = localDS(today);
   const countMap = {};
@@ -532,7 +538,7 @@ function renderHeatmap() {
       } else {
         const lines = workouts.filter(w => w.date === c.ds).map(w => {
           const ex = exercises.find(e => e.id === w.exId);
-          return `${ex ? ex.name : '?'} — ${Math.max(...w.sets.map(s => s.kg))} kg`;
+          return `${ex ? ex.name : '?'} - ${Math.max(...w.sets.map(s => s.kg))} kg`;
         });
         tipHtml = `<strong>${c.label}</strong>${lines.join('<br>')}`;
       }
@@ -715,12 +721,12 @@ function renderHistory() {
     return `<div class="log-row">
       <div>
         <div class="log-name">${ex ? ex.name : 'Gelöschte Übung'}</div>
-        <div class="log-sets">${w.sets.map(s => s.kg+'kg × '+s.reps).join(' · ')}</div>
+        <div class="log-sets">${w.sets.map(s => s.kg+'kg x '+s.reps).join(' | ')}</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
         <div style="text-align:right;font-size:12px;color:var(--text2);">
           <div class="log-date">${w.date}</div>
-          <div>Vol: ${vol.toLocaleString('de')} kg · Max: ${maxKg} kg</div>
+          <div>Vol: ${vol.toLocaleString('de')} kg | Max: ${maxKg} kg</div>
         </div>
         <button class="btn-ghost" onclick="deleteWorkout(${w.id})" title="Löschen">×</button>
       </div>
