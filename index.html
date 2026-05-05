@@ -143,7 +143,8 @@ select option { background: var(--surface2); }
   <h1>GYM<span>TRACKER</span></h1>
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
-    <button onclick="openTokenModal()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Account</button>
+    <span id="header-user" style="font-size:12px;color:var(--text2);"></span>
+    <button onclick="doLogout()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Abmelden</button>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
@@ -289,19 +290,20 @@ select option { background: var(--surface2); }
 
 </main>
 
-<!-- TOKEN MODAL -->
-<div id="token-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;">
-  <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;width:100%;max-width:420px;margin:1rem;">
-    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:600;margin-bottom:8px;">GitHub Token</div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6;">
-      Erstelle einen Token auf <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--accent);">github.com/settings/tokens</a> (classic, nur <strong>gist</strong> Scope).
-    </div>
-    <label>Personal Access Token</label>
-    <input type="password" id="token-input" placeholder="ghp_..." style="margin-bottom:1rem;" />
-    <div style="display:flex;gap:8px;">
-      <button onclick="saveToken()" style="flex:1;padding:9px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0d0d0d;font-weight:600;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Speichern</button>
-      <button onclick="closeTokenModal()" style="padding:9px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Abbrechen</button>
-    </div>
+<!-- LOGIN SCREEN -->
+<div id="login-screen" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:300;align-items:center;justify-content:center;flex-direction:column;">
+  <h1 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:700;margin-bottom:2rem;">GYM<span style="color:var(--accent);">TRACKER</span></h1>
+  <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;width:100%;max-width:360px;margin:1rem;">
+    <div style="font-size:15px;font-weight:600;font-family:'Syne',sans-serif;margin-bottom:1.25rem;">Anmelden</div>
+    <label>Nutzer</label>
+    <select id="login-user" style="margin-bottom:12px;">
+      <option value="vincent">Vincent</option>
+      <option value="sophia">Sophia</option>
+    </select>
+    <label>Passwort</label>
+    <input type="password" id="login-pw" placeholder="Passwort..." style="margin-bottom:1rem;" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button onclick="doLogin()" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0d0d0d;font-weight:600;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Einloggen</button>
+    <div id="login-error" style="color:var(--danger);font-size:13px;margin-top:8px;display:none;">Falsches Passwort.</div>
   </div>
 </div>
 
@@ -319,9 +321,15 @@ let chartInstance = null;
 let dashChartMode = 'weight';
 let dashChartInstance = null;
 
-const GIST_FILENAME = 'gym_tracker_data.json';
-let GIST_TOKEN = localStorage.getItem('gym_token') || '';
-let gistId = localStorage.getItem('gym_gist_id') || null;
+const USERS = {
+  vincent: { pw: 'xK9#mP2w', gistId: 'd57e77f3923c08c3e8b28307e2c7d12a', file: 'gym_tracker_data.json' },
+  sophia:  { pw: 'Rv4$nL8q', gistId: null, file: 'gym_tracker_sophia.json' }
+};
+
+const GIST_TOKEN = localStorage.getItem('gym_token') || '';
+let currentUser = localStorage.getItem('gym_current_user') || null;
+let gistId = null;
+let GIST_FILENAME = 'gym_tracker_data.json';
 
 function setSyncStatus(msg, color) {
   const el = document.getElementById('sync-status');
@@ -329,27 +337,41 @@ function setSyncStatus(msg, color) {
   el.style.color = color || 'var(--text3)';
 }
 
-function openTokenModal() {
-  document.getElementById('token-input').value = GIST_TOKEN;
-  document.getElementById('token-modal').style.display = 'flex';
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('login-pw').value = '';
 }
 
-function closeTokenModal() {
-  document.getElementById('token-modal').style.display = 'none';
+function hideLogin() {
+  document.getElementById('login-screen').style.display = 'none';
 }
 
-function saveToken() {
-  const token = document.getElementById('token-input').value.trim();
-  if (!token) { alert('Bitte Token eingeben!'); return; }
-  GIST_TOKEN = token;
-  gistId = null;
-  localStorage.setItem('gym_token', token);
-  localStorage.removeItem('gym_gist_id');
-  closeTokenModal();
+function doLogin() {
+  const user = document.getElementById('login-user').value;
+  const pw = document.getElementById('login-pw').value;
+  if (pw !== USERS[user].pw) {
+    document.getElementById('login-error').style.display = 'block';
+    return;
+  }
+  currentUser = user;
+  localStorage.setItem('gym_current_user', user);
+  GIST_FILENAME = USERS[user].file;
+  gistId = localStorage.getItem('gym_gist_' + user) || USERS[user].gistId;
+  document.getElementById('header-user').textContent = user.charAt(0).toUpperCase() + user.slice(1);
+  hideLogin();
+  exercises = []; workouts = [];
+  renderExercises(); renderDashboard();
   pullFromGist().then(loaded => {
     if (loaded) { renderExercises(); renderDashboard(); }
-    else { pushToGist(); }
   });
+}
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem('gym_current_user');
+  exercises = []; workouts = [];
+  showLogin();
 }
 
 async function pushToGist() {
@@ -372,7 +394,7 @@ async function pushToGist() {
       });
       const json = await res.json();
       gistId = json.id;
-      localStorage.setItem('gym_gist_id', gistId);
+      localStorage.setItem('gym_gist_' + currentUser, gistId);
     }
     if (res.ok) setSyncStatus('Gespeichert ' + new Date().toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'}), 'var(--success)');
     else setSyncStatus('Fehler beim Speichern', 'var(--danger)');
@@ -391,7 +413,7 @@ async function pullFromGist() {
       if (r.ok) {
         const list = await r.json();
         const found = list.find(g => g.files && g.files[GIST_FILENAME]);
-        if (found) { gistId = found.id; localStorage.setItem('gym_gist_id', gistId); }
+        if (found) { gistId = found.id; localStorage.setItem('gym_gist_' + currentUser, gistId); }
       }
     } catch(e) {}
   }
@@ -783,12 +805,14 @@ function clearAllData() {
 /* ---- INIT ---- */
 renderExercises();
 renderDashboard();
-if (!GIST_TOKEN) {
-  openTokenModal();
+if (!currentUser) {
+  showLogin();
 } else {
+  GIST_FILENAME = USERS[currentUser].file;
+  gistId = localStorage.getItem('gym_gist_' + currentUser) || USERS[currentUser].gistId;
+  document.getElementById('header-user').textContent = currentUser.charAt(0).toUpperCase() + currentUser.slice(1);
   pullFromGist().then(loaded => {
     if (loaded) { renderExercises(); renderDashboard(); }
-    else { pushToGist(); }
   });
 }
 </script>
