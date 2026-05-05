@@ -141,7 +141,11 @@ select option { background: var(--surface2); }
 
 <header>
   <h1>GYM<span>TRACKER</span></h1>
-  <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="current-user" style="font-size:12px;color:var(--text3);"></span>
+    <span id="sync-status" style="font-size:11px;color:var(--text3);"></span>
+    <button onclick="openTokenModal()" style="padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;">Account</button>
+  </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
     <button class="tab" onclick="switchTab('exercises')">Übungen</button>
@@ -289,15 +293,21 @@ select option { background: var(--surface2); }
 <!-- TOKEN MODAL -->
 <div id="token-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;">
   <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;width:100%;max-width:420px;margin:1rem;">
-    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:600;margin-bottom:8px;">GitHub Token einrichten</div>
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:600;margin-bottom:8px;">Account einrichten</div>
     <div style="font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;">
-      Erstelle einen Token auf <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--accent);">github.com/settings/tokens</a> (classic, nur <strong>gist</strong> Scope) und füge ihn hier ein. Er wird nur lokal gespeichert.
+      Erstelle einen Token auf <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--accent);">github.com/settings/tokens</a> (classic, nur <strong>gist</strong> Scope).
     </div>
+    <label>Name</label>
+    <input type="text" id="user-input" placeholder="z.B. Vincent" style="margin-bottom:12px;" />
     <label>Personal Access Token</label>
     <input type="password" id="token-input" placeholder="ghp_..." style="margin-bottom:1rem;" />
     <div style="display:flex;gap:8px;">
       <button onclick="saveToken()" style="flex:1;padding:9px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0d0d0d;font-weight:600;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Speichern</button>
       <button onclick="closeTokenModal()" style="padding:9px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Abbrechen</button>
+    </div>
+    <div id="user-list-wrap" style="margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1rem;">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Gespeicherte Accounts</div>
+      <div id="user-list"></div>
     </div>
   </div>
 </div>
@@ -318,9 +328,67 @@ let dashChartInstance = null;
 
 const GIST_FILENAME = 'gym_tracker_data.json';
 const CORRECT_GIST_ID = 'd57e77f3923c08c3e8b28307e2c7d12a';
-let GIST_TOKEN = localStorage.getItem('gym_token') || '';
+
+// Multi-user: accounts = [{name, token, gistId}]
+let accounts = JSON.parse(localStorage.getItem('gym_accounts') || '[]');
+let currentUser = localStorage.getItem('gym_current_user') || null;
+
+function getAccount() {
+  return accounts.find(a => a.name === currentUser) || null;
+}
+
+function saveAccounts() {
+  localStorage.setItem('gym_accounts', JSON.stringify(accounts));
+  localStorage.setItem('gym_current_user', currentUser || '');
+}
+
+let GIST_TOKEN = getAccount()?.token || '';
 let gistId = CORRECT_GIST_ID;
-localStorage.setItem('gym_gist_id', CORRECT_GIST_ID);
+
+function updateUserDisplay() {
+  const el = document.getElementById('current-user');
+  if (currentUser) el.textContent = currentUser;
+  else el.textContent = '';
+}
+
+function renderUserList() {
+  const el = document.getElementById('user-list');
+  if (!accounts.length) { el.innerHTML = '<div style="font-size:13px;color:var(--text3);">Keine gespeicherten Accounts.</div>'; return; }
+  el.innerHTML = accounts.map(a => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:13px;color:${a.name===currentUser?'var(--accent)':'var(--text)'};">${a.name}${a.name===currentUser?' (aktiv)':''}</span>
+      <div style="display:flex;gap:6px;">
+        <button onclick="switchUser('${a.name}')" style="padding:4px 10px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;">Wechseln</button>
+        <button onclick="deleteUser('${a.name}')" style="padding:4px 10px;border-radius:var(--radius-sm);border:1px solid rgba(255,77,77,0.3);background:transparent;color:var(--danger);font-size:12px;cursor:pointer;">X</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function switchUser(name) {
+  currentUser = name;
+  const acc = getAccount();
+  GIST_TOKEN = acc?.token || '';
+  gistId = acc?.gistId || CORRECT_GIST_ID;
+  saveAccounts();
+  updateUserDisplay();
+  closeTokenModal();
+  pullFromGist().then(loaded => { if (loaded) { renderExercises(); renderDashboard(); } });
+  setSyncStatus('Wechsle zu ' + name + '...', 'var(--text2)');
+}
+
+function deleteUser(name) {
+  if (!confirm(name + ' loeschen?')) return;
+  accounts = accounts.filter(a => a.name !== name);
+  if (currentUser === name) {
+    currentUser = accounts[0]?.name || null;
+    GIST_TOKEN = getAccount()?.token || '';
+    gistId = getAccount()?.gistId || CORRECT_GIST_ID;
+  }
+  saveAccounts();
+  renderUserList();
+  updateUserDisplay();
+}
 
 function setSyncStatus(msg, color) {
   const el = document.getElementById('sync-status');
