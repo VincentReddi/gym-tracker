@@ -299,6 +299,7 @@ select option { background: var(--surface2); }
     <select id="login-user" style="margin-bottom:12px;">
       <option value="vincent">Vincent</option>
       <option value="sophia">Sophia</option>
+      <option value="celina">Celina</option>
     </select>
     <label>Passwort</label>
     <input type="password" id="login-pw" placeholder="Passwort..." style="margin-bottom:12px;" onkeydown="if(event.key==='Enter')doLogin()" />
@@ -325,7 +326,8 @@ let dashChartInstance = null;
 
 const USERS = {
   vincent: { pw: 'xK9#mP2w', gistId: 'd57e77f3923c08c3e8b28307e2c7d12a', file: 'gym_tracker_data.json' },
-  sophia:  { pw: 'Rv4$nL8q', gistId: null, file: 'gym_tracker_sophia.json' }
+  sophia:  { pw: 'Rv4$nL8q', gistId: null, file: 'gym_tracker_sophia.json' },
+  celina:  { pw: 'Celina1403', gistId: null, file: 'gym_tracker_celina.json' }
 };
 
 const GIST_TOKEN = localStorage.getItem('gym_token') || '';
