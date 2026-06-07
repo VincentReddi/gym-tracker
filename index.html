@@ -330,7 +330,7 @@ const USERS = {
   celina:  { pw: 'Celina1403', gistId: null, file: 'gym_tracker_celina.json' }
 };
 
-const GIST_TOKEN = localStorage.getItem('gym_token') || '';
+let GIST_TOKEN = localStorage.getItem('gym_token') || '';
 let currentUser = localStorage.getItem('gym_current_user') || null;
 let gistId = null;
 let GIST_FILENAME = 'gym_tracker_data.json';
@@ -360,7 +360,7 @@ function doLogin() {
     document.getElementById('login-error').style.display = 'block';
     return;
   }
-  if (tokenInput) localStorage.setItem('gym_token', tokenInput);
+  if (tokenInput) { localStorage.setItem('gym_token', tokenInput); GIST_TOKEN = tokenInput; }
   currentUser = user;
   localStorage.setItem('gym_current_user', user);
   GIST_FILENAME = USERS[user].file;
@@ -674,7 +674,7 @@ function setTodayDate() {
 }
 
 function populateExerciseSelects() {
-  document.getElementById('log-exercise').innerHTML = '<option value="">— Übung wählen —</option>' + exercises.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+  document.getElementById('log-exercise').innerHTML = '<option value="">- Übung wählen -</option>' + exercises.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
   if (!sets.length) addSet();
 }
 
