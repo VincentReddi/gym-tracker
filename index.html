@@ -306,6 +306,7 @@ select option { background: var(--surface2); }
     <label>GitHub Token</label>
     <input type="password" id="login-token" placeholder="ghp_..." style="margin-bottom:1rem;" />
     <button onclick="doLogin()" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0d0d0d;font-weight:600;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Einloggen</button>
+    <button onclick="resetGistId()" style="width:100%;padding:8px;margin-top:8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Gist zurücksetzen</button>
     <div id="login-error" style="color:var(--danger);font-size:13px;margin-top:8px;display:none;">Falsches Passwort.</div>
   </div>
 </div>
@@ -325,7 +326,7 @@ let dashChartMode = 'weight';
 let dashChartInstance = null;
 
 const USERS = {
-  vincent: { pw: 'xK9#mP2w', gistId: 'd57e77f3923c08c3e8b28307e2c7d12a', file: 'gym_tracker_data.json' },
+  vincent: { pw: 'xK9#mP2w', gistId: null, file: 'gym_tracker_data.json' },
   sophia:  { pw: 'Rv4$nL8q', gistId: null, file: 'gym_tracker_sophia.json' },
   celina:  { pw: 'Celina1403', gistId: null, file: 'gym_tracker_celina.json' }
 };
@@ -339,6 +340,12 @@ function setSyncStatus(msg, color) {
   const el = document.getElementById('sync-status');
   el.textContent = msg;
   el.style.color = color || 'var(--text3)';
+}
+
+function resetGistId() {
+  const user = document.getElementById('login-user').value;
+  localStorage.removeItem('gym_gist_' + user);
+  alert('Gist ID für ' + user + ' zurückgesetzt. Beim nächsten Speichern wird ein neuer erstellt.');
 }
 
 function showLogin() {
