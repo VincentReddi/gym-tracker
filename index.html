@@ -304,8 +304,10 @@ select option { background: var(--surface2); }
     </select>
     <label>Passwort</label>
     <input type="password" id="login-pw" placeholder="Passwort..." style="margin-bottom:12px;" onkeydown="if(event.key==='Enter')doLogin()" />
-    <label>GitHub Token</label>
-    <input type="password" id="login-token" placeholder="ghp_..." style="margin-bottom:1rem;" />
+    <div id="token-field-wrap" style="margin-bottom:1rem;">
+      <label>GitHub Token</label>
+      <input type="password" id="login-token" placeholder="ghp_..." />
+    </div>
     <button onclick="doLogin()" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0d0d0d;font-weight:600;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Einloggen</button>
     <button onclick="resetGistId()" style="width:100%;padding:8px;margin-top:8px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Gist zurücksetzen</button>
     <div id="login-error" style="color:var(--danger);font-size:13px;margin-top:8px;display:none;">Falsches Passwort.</div>
@@ -330,7 +332,7 @@ const USERS = {
   vincent: { pw: 'xK9#mP2w', gistId: null, file: 'gym_tracker_data.json' },
   sophia:  { pw: 'Rv4$nL8q', gistId: null, file: 'gym_tracker_sophia.json' },
   celina:  { pw: 'Celina1403', gistId: null, file: 'gym_tracker_celina.json' },
-  wolfgang: { pw: '1234Inglewood12?!?', gistId: null, file: 'gym_tracker_wolfgang.json' }
+  wolfgang: { pw: 'NextGen123', gistId: null, file: 'gym_tracker_wolfgang.json' }
 };
 
 let GIST_TOKEN = localStorage.getItem('gym_token') || '';
@@ -355,6 +357,8 @@ function showLogin() {
   document.getElementById('login-error').style.display = 'none';
   document.getElementById('login-pw').value = '';
   document.getElementById('login-token').value = '';
+  // Only show token field if no token saved yet
+  document.getElementById('token-field-wrap').style.display = localStorage.getItem('gym_token') ? 'none' : 'block';
 }
 
 function hideLogin() {
