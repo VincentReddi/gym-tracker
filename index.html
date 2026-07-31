@@ -314,6 +314,22 @@ select option { background: var(--surface2); }
   </div>
 </div>
 
+<!-- AKTIVIERUNGS SCREEN -->
+<div id="activation-screen" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:400;align-items:center;justify-content:center;flex-direction:column;">
+  <h1 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:700;margin-bottom:2rem;">GYM<span style="color:var(--accent);">TRACKER</span></h1>
+  <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;width:100%;max-width:380px;margin:1rem;">
+    <div style="font-size:15px;font-weight:600;font-family:'Syne',sans-serif;margin-bottom:8px;">Lizenz aktivieren</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6;">
+      Bitte gib deinen Aktivierungscode ein, um GYMTRACKER dauerhaft freizuschalten.
+    </div>
+    <label>Aktivierungscode</label>
+    <input type="text" id="activation-input" placeholder="XXXX-XXXX" maxlength="9" style="margin-bottom:1rem;text-transform:uppercase;letter-spacing:2px;font-family:monospace;" onkeydown="if(event.key==='Enter')checkActivation()" />
+    <button onclick="checkActivation()" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0d0d0d;font-weight:600;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Aktivieren</button>
+    <div id="activation-error" style="color:var(--danger);font-size:13px;margin-top:8px;display:none;">Ungültiger Code.</div>
+    <div id="activation-ok" style="color:var(--success);font-size:13px;margin-top:8px;display:none;">Lizenz aktiviert - Lifetime Zugang.</div>
+  </div>
+</div>
+
 <div id="hm-tooltip"></div>
 
 
@@ -365,15 +381,42 @@ function hideLogin() {
   document.getElementById('login-screen').style.display = 'none';
 }
 
-function doLogin() {
-  const user = document.getElementById('login-user').value;
-  const pw = document.getElementById('login-pw').value;
-  const tokenInput = document.getElementById('login-token').value.trim();
-  if (pw !== USERS[user].pw) {
-    document.getElementById('login-error').style.display = 'block';
+const ACTIVATION_CODES = {
+  wolfgang: 'NXTG9F2K'
+};
+
+function needsActivation(user) {
+  if (!ACTIVATION_CODES[user]) return false;
+  return localStorage.getItem('gym_activated_' + user) !== 'yes';
+}
+
+let pendingUser = null;
+
+function showActivation(user) {
+  pendingUser = user;
+  document.getElementById('activation-input').value = '';
+  document.getElementById('activation-error').style.display = 'none';
+  document.getElementById('activation-ok').style.display = 'none';
+  document.getElementById('activation-screen').style.display = 'flex';
+}
+
+function checkActivation() {
+  const code = document.getElementById('activation-input').value.trim().toUpperCase().replace(/-/g, '');
+  if (code !== ACTIVATION_CODES[pendingUser]) {
+    document.getElementById('activation-error').style.display = 'block';
+    document.getElementById('activation-ok').style.display = 'none';
     return;
   }
-  if (tokenInput) { localStorage.setItem('gym_token', tokenInput); GIST_TOKEN = tokenInput; }
+  localStorage.setItem('gym_activated_' + pendingUser, 'yes');
+  document.getElementById('activation-error').style.display = 'none';
+  document.getElementById('activation-ok').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('activation-screen').style.display = 'none';
+    finishLogin(pendingUser);
+  }, 900);
+}
+
+function finishLogin(user) {
   currentUser = user;
   localStorage.setItem('gym_current_user', user);
   GIST_FILENAME = USERS[user].file;
@@ -385,6 +428,23 @@ function doLogin() {
   pullFromGist().then(loaded => {
     if (loaded) { renderExercises(); renderDashboard(); }
   });
+}
+
+function doLogin() {
+  const user = document.getElementById('login-user').value;
+  const pw = document.getElementById('login-pw').value;
+  const tokenInput = document.getElementById('login-token').value.trim();
+  if (pw !== USERS[user].pw) {
+    document.getElementById('login-error').style.display = 'block';
+    return;
+  }
+  if (tokenInput) { localStorage.setItem('gym_token', tokenInput); GIST_TOKEN = tokenInput; }
+  if (needsActivation(user)) {
+    hideLogin();
+    showActivation(user);
+    return;
+  }
+  finishLogin(user);
 }
 
 function doLogout() {
@@ -827,6 +887,8 @@ renderExercises();
 renderDashboard();
 if (!currentUser) {
   showLogin();
+} else if (needsActivation(currentUser)) {
+  showActivation(currentUser);
 } else {
   GIST_FILENAME = USERS[currentUser].file;
   gistId = localStorage.getItem('gym_gist_' + currentUser) || USERS[currentUser].gistId;
