@@ -15,7 +15,7 @@ import { cap } from './utils.js';
 
 const USERS = {
   vincent: {
-    hash: 'c8f5268bf710977039ee79cf10df4452ea7cb8fd60779d591c3f86e9b6c985a7',
+    hash: '9751dfe99ce5739dab320609b9d0b4ec303490f98ec0c26af06d07d7a6b59c83',
     file: 'gym_tracker_data.json',
   },
   sophia: {
@@ -23,11 +23,11 @@ const USERS = {
     file: 'gym_tracker_sophia.json',
   },
   celina: {
-    hash: '2dd12f54b6ead5c0c5475a02a34693eeca2526d8999253f033e89990c0d77658',
+    hash: 'a3ee9c7d98d1543bc7552a00797050aef462fd8d72fcfa38e005a466c73a94d0',
     file: 'gym_tracker_celina.json',
   },
   wolfgang: {
-    hash: '497c728cfb985ce6f76396487afee372f2b0e8029c5cad77f91430986f1df6de',
+    hash: '962e19c01a5bc41d3ed4a901825046c2219b58eb040c35d492f0cea4541b8cc6',
     file: 'gym_tracker_wolfgang2.json',
   },
 };
