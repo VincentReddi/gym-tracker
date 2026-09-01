@@ -1,0 +1,21 @@
+{
+  "name": "gym-tracker",
+  "version": "2.0.0",
+  "description": "Schlanke Web-App zum Tracken von Krafttraining – Vanilla JS (ES-Module), kein Build-Schritt.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python -m http.server 5510",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VincentReddi/gym-tracker.git"
+  },
+  "homepage": "https://vincentreddi.github.io/gym-tracker/"
+}
