@@ -2,7 +2,7 @@
 
 import { state, activeExercises, activeWorkouts } from '../state.js';
 import { save } from '../sync.js';
-import { localDS, toast, escapeHtml } from '../utils.js';
+import { localDS, deDate, toast, escapeHtml } from '../utils.js';
 
 export function setTodayDate() {
   const d = document.getElementById('log-date');
@@ -13,7 +13,48 @@ export function populateLogSelect() {
   document.getElementById('log-exercise').innerHTML =
     '<option value="">- Übung wählen -</option>' +
     activeExercises().map((e) => `<option value="${e.id}">${escapeHtml(e.name)}</option>`).join('');
-  if (!state.sets.length) addSet();
+  // Frischer Zustand beim Betreten des Tabs: ein leerer Satz, kein Hinweis.
+  state.sets = [{ kg: '', reps: '' }];
+  renderSets();
+  hidePrefillHint();
+}
+
+/**
+ * Beim Wählen einer Übung: die Sätze mit den Werten des letzten Trainings
+ * dieser Übung vorbelegen (falls vorhanden), sonst ein leerer Satz.
+ */
+export function onLogExerciseChange() {
+  const exId = parseInt(document.getElementById('log-exercise').value);
+  if (!exId) {
+    state.sets = [{ kg: '', reps: '' }];
+    renderSets();
+    hidePrefillHint();
+    return;
+  }
+  const last = activeWorkouts()
+    .filter((w) => w.exId === exId)
+    .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)[0];
+  if (last) {
+    state.sets = last.sets.map((s) => ({ kg: String(s.kg), reps: String(s.reps) }));
+    renderSets();
+    showPrefillHint(`↩ Werte vom ${deDate(last.date)} übernommen – anpassen & speichern.`);
+  } else {
+    state.sets = [{ kg: '', reps: '' }];
+    renderSets();
+    hidePrefillHint();
+  }
+}
+
+function showPrefillHint(text) {
+  const el = document.getElementById('log-prefill-hint');
+  if (!el) return;
+  el.textContent = text;
+  el.style.display = 'block';
+}
+
+function hidePrefillHint() {
+  const el = document.getElementById('log-prefill-hint');
+  if (el) el.style.display = 'none';
 }
 
 export function addSet() {
@@ -64,8 +105,9 @@ export function saveWorkout() {
     deleted: false,
   });
   save();
-  state.sets = [];
+  state.sets = [{ kg: '', reps: '' }];
   renderSets();
+  hidePrefillHint();
   renderTodaySummary();
   toast('Workout gespeichert!');
 }

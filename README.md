@@ -14,7 +14,7 @@ und synchronisiert optional über einen privaten GitHub-Gist.
 
 - **Dashboard** – Aktivitäts-Heatmap, Monatskennzahlen (Trainings, Volumen, Übungen) und Fortschritts-Chart pro Übung
 - **Übungen** – nach Muskelgruppe gruppiert; Löschen entfernt **kaskadierend** auch die zugehörigen Einträge (mit Bestätigung)
-- **Loggen** – Workout mit beliebig vielen Sätzen (Gewicht × Wiederholungen) erfassen
+- **Loggen** – Workout mit beliebig vielen Sätzen (Gewicht × Wiederholungen) erfassen; die Werte der letzten Einheit werden automatisch vorausgefüllt
 - **Verlauf** – komplette Historie, nach Übung filterbar, einzeln löschbar
 - **Fortschritt** – Linien-Chart (Max-Gewicht oder Gesamtvolumen) inkl. Bestleistung, Durchschnitt und Trend
 - **Multi-Device-Sync** – über einen privaten GitHub-Gist, mit konfliktfreiem **Merge** (kein Datenverlust bei parallelen Geräten)

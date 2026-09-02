@@ -6,9 +6,18 @@ import { initSync, syncNow } from './sync.js';
 import { initAuth, bootSession, doLogin, doLogout, checkActivation, resetGistId } from './auth.js';
 import { renderDashboard, renderHeatmap, setDashMode, renderDashChart } from './views/dashboard.js';
 import { addExercise, deleteExercise, renderExercises } from './views/exercises.js';
-import { setTodayDate, populateLogSelect, addSet, removeSet, saveWorkout, renderTodaySummary } from './views/log.js';
+import {
+  setTodayDate,
+  populateLogSelect,
+  onLogExerciseChange,
+  addSet,
+  removeSet,
+  saveWorkout,
+  renderTodaySummary,
+} from './views/log.js';
 import { populateFilterSelect, renderHistory, deleteWorkout } from './views/history.js';
 import { populateChartSelect, setChartMode, renderChart } from './views/progress.js';
+import { maybeShowWhatsNew, dismissWhatsNew } from './whatsnew.js';
 
 let currentTab = 'dashboard';
 
@@ -46,6 +55,7 @@ function refreshAfterSync() {
 function afterLogin() {
   switchTab('dashboard');
   syncNow();
+  maybeShowWhatsNew();
 }
 
 function wireEvents() {
@@ -73,6 +83,7 @@ function wireEvents() {
   });
 
   // --- Loggen ---
+  document.getElementById('log-exercise').addEventListener('change', onLogExerciseChange);
   document.getElementById('btn-add-set').addEventListener('click', addSet);
   document.getElementById('btn-save-workout').addEventListener('click', saveWorkout);
   document.getElementById('log-date').addEventListener('change', renderTodaySummary);
@@ -113,6 +124,9 @@ function wireEvents() {
   document.getElementById('activation-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') checkActivation();
   });
+
+  // --- Was ist neu ---
+  document.getElementById('btn-whatsnew-close').addEventListener('click', dismissWhatsNew);
 }
 
 function boot() {
