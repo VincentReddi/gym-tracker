@@ -27,22 +27,22 @@ header h1 span {
   header h1 span {
     background-image: linear-gradient(
       104deg,
-      #c8ff00 0%,
-      #d9ff4d 36%,
-      #eaffa0 46%,
-      #ffffff 50%,
-      #eaffa0 54%,
-      #d9ff4d 64%,
-      #c8ff00 100%
+      #a6d400 0%,
+      #c8ff00 24%,
+      #d8ff5e 38%,
+      #ecffb0 50%,
+      #d8ff5e 62%,
+      #c8ff00 76%,
+      #a6d400 100%
     );
-    background-size: 260% 100%;
+    background-size: 300% 100%;
     background-position: 0% 50%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 16px rgba(200, 255, 0, 0.34);
-    animation: gt-shine 4.8s linear infinite;
+    text-shadow: 0 0 20px rgba(200, 255, 0, 0.38);
+    animation: gt-shine 6.5s linear infinite;
   }
 }
 
