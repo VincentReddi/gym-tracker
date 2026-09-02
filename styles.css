@@ -20,7 +20,33 @@ header {
   backdrop-filter: blur(10px); z-index: 10;
 }
 header h1 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
-header h1 span { color: var(--accent); }
+header h1 span {
+  color: var(--accent); /* Fallback, falls background-clip:text nicht unterstützt wird */
+  background: linear-gradient(
+    120deg,
+    var(--accent) 0%, var(--accent) 44%,
+    #ffffff 50%,
+    var(--accent) 56%, var(--accent) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gt-shine 3.5s linear infinite;
+}
+
+@keyframes gt-shine {
+  from { background-position: 100% center; }
+  to   { background-position: -100% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  header h1 span {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: var(--accent);
+  }
+}
 
 .tabs { display: flex; gap: 4px; background: var(--surface); border-radius: var(--radius-sm); padding: 4px; border: 1px solid var(--border); }
 .tab { padding: 7px 14px; border-radius: 6px; border: none; background: transparent; cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text2); transition: all 0.15s; }
