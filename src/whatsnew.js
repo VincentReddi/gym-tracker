@@ -6,10 +6,6 @@ const SEEN_KEY = 'gym_seen_version';
 
 const NOTES = [
   {
-    icon: '✨',
-    text: 'Frisches Logo mit animiertem Glanz-Effekt im Header.',
-  },
-  {
     icon: '🏋️',
     text: 'Beim Loggen werden die Werte deines letzten Trainings dieser Übung automatisch vorausgefüllt – nur noch anpassen und speichern.',
   },
