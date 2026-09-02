@@ -1,10 +1,14 @@
 // "Was ist neu"-Screen – zeigt nach einem Update einmalig kompakt die Neuerungen.
 // Merkt sich die zuletzt gesehene Version in localStorage, damit er nur einmal erscheint.
 
-const APP_VERSION = '2.1';
+const APP_VERSION = '2.2';
 const SEEN_KEY = 'gym_seen_version';
 
 const NOTES = [
+  {
+    icon: '✨',
+    text: 'Frisches Logo mit animiertem Glanz-Effekt im Header.',
+  },
   {
     icon: '🏋️',
     text: 'Beim Loggen werden die Werte deines letzten Trainings dieser Übung automatisch vorausgefüllt – nur noch anpassen und speichern.',

@@ -20,11 +20,11 @@ header {
   backdrop-filter: blur(10px); z-index: 10;
 }
 header h1 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
-header h1 span {
+.gt-shine-text {
   color: var(--accent); /* Fallback ohne background-clip:text */
 }
 @supports ((background-clip: text) or (-webkit-background-clip: text)) {
-  header h1 span {
+  .gt-shine-text {
     background-image: linear-gradient(
       104deg,
       #a6d400 0%,
@@ -46,13 +46,15 @@ header h1 span {
   }
 }
 
+/* 150% entspricht bei background-size:300% exakt einer Gradient-Periode
+   -> nahtloser Loop ohne sichtbaren Sprung. Richtung: von rechts nach links. */
 @keyframes gt-shine {
-  from { background-position: 0% 50%; }
-  to   { background-position: 100% 50%; }
+  from { background-position: 150% 50%; }
+  to   { background-position: 0% 50%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  header h1 span {
+  .gt-shine-text {
     animation: none;
     background-position: 55% 50%;
   }
