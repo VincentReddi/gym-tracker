@@ -228,3 +228,44 @@ button { -webkit-tap-highlight-color: transparent; }
   .bn-primary:active { transform: scale(0.92); }
 }
 
+/* ===== KI-Coach ===== */
+.coach-card {
+  background: linear-gradient(155deg, rgba(200, 255, 0, 0.12), var(--surface) 62%);
+  border-color: rgba(200, 255, 0, 0.35);
+}
+.coach-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.coach-card-sub {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.coach-card-btn {
+  width: 100%;
+}
+.coach-analysis {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text);
+}
+.coach-meta {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 12px;
+}
+.coach-error {
+  color: var(--danger);
+  font-size: 14px;
+}
+
+/* Coach-Punkt in der Bottom-Nav hervorheben */
+.bn-coach:not(.active) {
+  color: var(--accent2);
+}
+
+

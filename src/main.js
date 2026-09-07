@@ -18,11 +18,15 @@ import {
 import { populateFilterSelect, renderHistory, deleteWorkout } from './views/history.js';
 import { populateChartSelect, setChartMode, renderChart } from './views/progress.js';
 import { maybeShowWhatsNew, dismissWhatsNew } from './whatsnew.js';
+import { renderCoach, renderCoachCard, generateAnalysis } from './coach.js';
 
 let currentTab = 'dashboard';
 
 function renderTab(name) {
-  if (name === 'dashboard') renderDashboard();
+  if (name === 'dashboard') {
+    renderDashboard();
+    renderCoachCard();
+  } else if (name === 'coach') renderCoach();
   else if (name === 'exercises') renderExercises();
   else if (name === 'log') {
     setTodayDate();
@@ -116,6 +120,15 @@ function wireEvents() {
   document.getElementById('chart-exercise').addEventListener('change', renderChart);
   document.getElementById('btn-weight').addEventListener('click', () => setChartMode('weight'));
   document.getElementById('btn-volume').addEventListener('click', () => setChartMode('volume'));
+
+  // --- KI-Coach ---
+  document.getElementById('coach-content').addEventListener('click', (e) => {
+    if (e.target.closest('[data-action="coach-generate"]')) generateAnalysis();
+  });
+  document.getElementById('coach-card').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-tab]');
+    if (btn) switchTab(btn.dataset.tab);
+  });
 
   // --- Login ---
   document.getElementById('btn-login').addEventListener('click', doLogin);

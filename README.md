@@ -19,6 +19,7 @@ und synchronisiert optional über einen privaten GitHub-Gist.
 - **Fortschritt** – Linien-Chart (Max-Gewicht oder Gesamtvolumen) inkl. Bestleistung, Durchschnitt und Trend
 - **Multi-Device-Sync** – über einen privaten GitHub-Gist, mit konfliktfreiem **Merge** (kein Datenverlust bei parallelen Geräten)
 - **Als App installierbar (PWA)** – „Zum Homescreen hinzufügen", läuft im Vollbild und **offline**; auf Mobile mit **Bottom-Navigation** und Touch-Feinschliff
+- **🤖 KI-Coach** – jeden Sonntag (ab 2 Trainings/Woche) eine kurze KI-Analyse der Trainingswoche; läuft über einen kleinen Cloudflare Worker, der den API-Key server-seitig hält (Setup: [`worker/README.md`](worker/README.md))
 
 ## Live-Demo
 
