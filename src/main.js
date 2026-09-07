@@ -40,6 +40,7 @@ function renderTab(name) {
 function switchTab(name) {
   currentTab = name;
   document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.bn-item').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
   document.querySelectorAll('.section').forEach((s) => s.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   renderTab(name);
@@ -63,6 +64,10 @@ function wireEvents() {
   document.getElementById('btn-logout').addEventListener('click', doLogout);
   document.querySelector('.tabs').addEventListener('click', (e) => {
     const btn = e.target.closest('.tab');
+    if (btn && btn.dataset.tab) switchTab(btn.dataset.tab);
+  });
+  document.querySelector('.bottom-nav').addEventListener('click', (e) => {
+    const btn = e.target.closest('.bn-item');
     if (btn && btn.dataset.tab) switchTab(btn.dataset.tab);
   });
 

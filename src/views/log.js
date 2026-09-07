@@ -73,8 +73,8 @@ export function renderSets() {
       (s, i) =>
         `<div class="set-grid">
       <div class="set-num">${i + 1}</div>
-      <input type="number" min="0" step="0.5" value="${s.kg}" placeholder="kg" data-set-index="${i}" data-set-field="kg" />
-      <input type="number" min="0" value="${s.reps}" placeholder="Reps" data-set-index="${i}" data-set-field="reps" />
+      <input type="number" inputmode="decimal" min="0" step="0.5" value="${s.kg}" placeholder="kg" data-set-index="${i}" data-set-field="kg" />
+      <input type="number" inputmode="numeric" min="0" value="${s.reps}" placeholder="Reps" data-set-index="${i}" data-set-field="reps" />
       <button class="btn-ghost" data-action="del-set" data-index="${i}">×</button>
     </div>`
     )

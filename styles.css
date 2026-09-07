@@ -161,3 +161,70 @@ select option { background: var(--surface2); }
   .metric-val { font-size: 20px; }
   .toast { bottom: 0.75rem; right: 0.75rem; font-size: 12px; padding: 8px 14px; }
 }
+
+/* ===== App-Feel: Touch, Übergänge, Bottom-Navigation ===== */
+
+html { -webkit-text-size-adjust: 100%; }
+body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
+button { -webkit-tap-highlight-color: transparent; }
+
+/* Sanfter Tab-Übergang */
+.section.active { animation: sectionIn 0.22s ease both; }
+@keyframes sectionIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Taktiles Feedback beim Tippen */
+.btn:active, .btn-primary:active, .chart-btn:active, .tab:active,
+#btn-login:active, #btn-activate:active, #btn-whatsnew-close:active { transform: scale(0.97); }
+
+/* Bottom-Navigation nur auf Mobile */
+.bottom-nav { display: none; }
+
+@media (max-width: 620px) {
+  header { flex-direction: row; align-items: center; gap: 8px; padding-top: max(0.75rem, env(safe-area-inset-top)); }
+  header .tabs { display: none; }
+  header h1 { font-size: 18px; }
+
+  /* Platz für die Bottom-Nav */
+  main { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+
+  /* Kein iOS-Zoom beim Fokus + größere Touch-Ziele */
+  input, select { font-size: 16px; padding: 12px 14px; }
+  .btn, .btn-primary { padding: 12px 18px; font-size: 14px; }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    justify-content: space-around; align-items: flex-end;
+    background: rgba(15, 15, 15, 0.92);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+  }
+  .bn-item {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: none; border: none; cursor: pointer;
+    color: var(--text3); font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+    padding: 4px 0; transition: color 0.15s, transform 0.1s;
+  }
+  .bn-item svg { width: 23px; height: 23px; }
+  .bn-item span { line-height: 1; }
+  .bn-item.active { color: var(--accent); }
+  .bn-item:active { transform: scale(0.9); }
+
+  /* Zentraler „+"-Button als hervorgehobene Aktion */
+  .bn-primary {
+    flex: 0 0 auto; gap: 0; align-self: center;
+    width: 54px; height: 54px; margin-top: -16px; border-radius: 50%;
+    color: #0d0d0d; background: var(--accent);
+    box-shadow: 0 5px 16px rgba(200, 255, 0, 0.4);
+    justify-content: center; align-items: center;
+  }
+  .bn-primary svg { width: 27px; height: 27px; }
+  .bn-primary.active { color: #0d0d0d; }
+  .bn-primary:active { transform: scale(0.92); }
+}
+

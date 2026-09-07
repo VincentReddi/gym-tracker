@@ -18,6 +18,7 @@ und synchronisiert optional über einen privaten GitHub-Gist.
 - **Verlauf** – komplette Historie, nach Übung filterbar, einzeln löschbar
 - **Fortschritt** – Linien-Chart (Max-Gewicht oder Gesamtvolumen) inkl. Bestleistung, Durchschnitt und Trend
 - **Multi-Device-Sync** – über einen privaten GitHub-Gist, mit konfliktfreiem **Merge** (kein Datenverlust bei parallelen Geräten)
+- **Als App installierbar (PWA)** – „Zum Homescreen hinzufügen", läuft im Vollbild und **offline**; auf Mobile mit **Bottom-Navigation** und Touch-Feinschliff
 
 ## Live-Demo
 

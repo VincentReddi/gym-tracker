@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Gym Tracker">
+  <rect width="512" height="512" fill="#0d0d0d"/>
+  <g fill="#c8ff00">
+    <rect x="76.8" y="194.56" width="46.08" height="122.88" rx="15"/>
+    <rect x="122.88" y="163.84" width="40.96" height="184.32" rx="15"/>
+    <rect x="163.84" y="230.4" width="184.32" height="51.2" rx="15"/>
+    <rect x="348.16" y="163.84" width="40.96" height="184.32" rx="15"/>
+    <rect x="389.12" y="194.56" width="46.08" height="122.88" rx="15"/>
+  </g>
+</svg>
