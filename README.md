@@ -1,86 +1,106 @@
-# 🏋️ Gym Tracker
+<p align="center">
+  <img src="docs/logo.svg" alt="GYM TRACKER" width="480" />
+</p>
 
-Eine schlanke Web-App zum Tracken von Krafttraining: Übungen anlegen, Workouts
-mit Sätzen/Gewicht/Wiederholungen loggen, Fortschritt in Charts sehen und die
-Trainingsaktivität als Heatmap. Läuft komplett im Browser, ohne Build-Schritt,
-und synchronisiert optional über einen privaten GitHub-Gist.
+<p align="center">
+  <a href="https://github.com/VincentReddi/gym-tracker/actions/workflows/static.yml">
+    <img src="https://github.com/VincentReddi/gym-tracker/actions/workflows/static.yml/badge.svg" alt="Deploy" />
+  </a>
+  <img src="https://img.shields.io/badge/PWA-installierbar-5A0FC8" alt="PWA" />
+  <img src="https://img.shields.io/badge/build-none-brightgreen" alt="No build step" />
+  <img src="https://img.shields.io/badge/vanilla-JS-f7df1e" alt="Vanilla JS" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" />
+</p>
 
-![Deploy](https://github.com/VincentReddi/gym-tracker/actions/workflows/static.yml/badge.svg)
-![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
-![Vanilla JS](https://img.shields.io/badge/vanilla-JS-f7df1e.svg)
-![No build step](https://img.shields.io/badge/build-none-brightgreen.svg)
+<p align="center">
+  <b>🔗 <a href="https://vincentreddi.github.io/gym-tracker/">Live-Demo</a></b>
+</p>
 
-## Features
+Eine schlanke, **installierbare** Web-App zum Tracken von Krafttraining: Übungen anlegen,
+Workouts mit Sätzen/Gewicht/Wiederholungen loggen, Fortschritt in Charts sehen, die
+Trainingsaktivität als Heatmap — und sonntags eine **persönliche KI-Wochenanalyse**.
+Läuft komplett im Browser, ohne Build-Schritt, offline-fähig, und synchronisiert optional
+über einen privaten GitHub-Gist.
+
+## 📱 Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/dashboard.jpg" alt="Dashboard" width="245" />
+  &nbsp;
+  <img src="docs/screenshots/coach.jpg" alt="KI-Coach" width="245" />
+  &nbsp;
+  <img src="docs/screenshots/log.jpg" alt="Workout loggen" width="245" />
+</p>
+<p align="center"><sub>Dashboard mit KI-Karte &amp; Heatmap · KI-Wochenanalyse · Loggen mit Auto-Vorbelegung</sub></p>
+
+## ✨ Features
 
 - **Dashboard** – Aktivitäts-Heatmap, Monatskennzahlen (Trainings, Volumen, Übungen) und Fortschritts-Chart pro Übung
+- **🤖 KI-Coach** – sonntags (ab 2 Trainings/Woche) eine kompakte, persönliche Analyse deiner Trainingswoche
+- **Loggen** – Workout mit beliebig vielen Sätzen erfassen; die Werte der letzten Einheit werden **automatisch vorausgefüllt**
 - **Übungen** – nach Muskelgruppe gruppiert; Löschen entfernt **kaskadierend** auch die zugehörigen Einträge (mit Bestätigung)
-- **Loggen** – Workout mit beliebig vielen Sätzen (Gewicht × Wiederholungen) erfassen; die Werte der letzten Einheit werden automatisch vorausgefüllt
-- **Verlauf** – komplette Historie, nach Übung filterbar, einzeln löschbar
-- **Fortschritt** – Linien-Chart (Max-Gewicht oder Gesamtvolumen) inkl. Bestleistung, Durchschnitt und Trend
+- **Verlauf & Fortschritt** – komplette Historie, filterbar; Charts für Max-Gewicht und Volumen inkl. Trend
 - **Multi-Device-Sync** – über einen privaten GitHub-Gist, mit konfliktfreiem **Merge** (kein Datenverlust bei parallelen Geräten)
-- **Als App installierbar (PWA)** – „Zum Homescreen hinzufügen", läuft im Vollbild und **offline**; auf Mobile mit **Bottom-Navigation** und Touch-Feinschliff
-- **🤖 KI-Coach** – jeden Sonntag (ab 2 Trainings/Woche) eine kurze KI-Analyse der Trainingswoche; läuft über einen kleinen Cloudflare Worker, der den API-Key server-seitig hält (Setup: [`worker/README.md`](worker/README.md))
+- **📲 Installierbar (PWA)** – „Zum Homescreen hinzufügen", Vollbild, **offline**; auf Mobile mit **Bottom-Navigation** und Touch-Feinschliff
 
-## Live-Demo
-
-👉 **https://vincentreddi.github.io/gym-tracker/**
-
-## Tech-Stack
+## 🧰 Tech-Stack
 
 - **Vanilla JavaScript** (ES-Module, kein Framework, kein Bundler)
-- **[Chart.js](https://www.chartjs.org/)** für die Diagramme (per CDN)
-- **localStorage** als lokaler Cache + **GitHub Gists** als Sync-Backend
-- **Web Crypto** (SHA-256) für das Login
+- **[Chart.js](https://www.chartjs.org/)** (selbst gehostet, offline-fähig)
+- **localStorage** als Cache · **GitHub Gists** als Sync-Backend
+- **Web Crypto** (SHA-256) fürs Login · **Service Worker** + **Web App Manifest** für PWA/Offline
+- **KI-Coach** über einen kleinen **Deno-Deploy-Proxy** (hält den API-Key server-seitig)
 - Deployment über **GitHub Pages** (GitHub Actions)
 
-## Projektstruktur
+## 📂 Projektstruktur
 
 ```text
 gym-tracker/
-├── index.html                 # Nur Markup – keine Logik, keine Inline-Handler
+├── index.html                 # Markup – keine Logik, keine Inline-Handler
 ├── styles.css                 # Gesamtes Styling
+├── manifest.json · sw.js      # PWA (installierbar + offline)
+├── icons/                     # App-Icons
+├── vendor/chart.umd.min.js    # Chart.js, selbst gehostet
 ├── src/
-│   ├── main.js                # Einstiegspunkt: Event-Verdrahtung + Tab-Navigation
+│   ├── main.js                # Einstiegspunkt: Event-Verdrahtung + Navigation
 │   ├── state.js               # Zustand, localStorage, Merge & Tombstones
 │   ├── sync.js                # Gist-Sync: Pull → Merge → entprellter Push
-│   ├── auth.js                # Login/Aktivierung (SHA-256, kein Klartext)
-│   ├── utils.js               # Datums-/HTML-Helfer, Toast
-│   └── views/
-│       ├── dashboard.js
-│       ├── exercises.js
-│       ├── log.js
-│       ├── history.js
-│       └── progress.js
+│   ├── auth.js                # Login (SHA-256, kein Klartext)
+│   ├── coach.js               # KI-Wochenanalyse (Frontend)
+│   ├── whatsnew.js · utils.js
+│   └── views/                 # dashboard · exercises · log · history · progress
+├── worker/                    # KI-Proxy (Deno Deploy) + Setup-Anleitung
 └── .github/workflows/static.yml   # Auto-Deploy nach GitHub Pages
 ```
 
-## Lokale Entwicklung
+## 🚀 Lokale Entwicklung
 
-Weil die App ES-Module nutzt, muss sie über **HTTP** ausgeliefert werden
-(`file://` funktioniert nicht). Ein beliebiger statischer Server genügt:
+Weil die App ES-Module nutzt, muss sie über **HTTP** ausgeliefert werden (`file://` geht nicht).
+Ein beliebiger statischer Server genügt:
 
 ```bash
 python -m http.server 5510
 ```
 
-Danach http://localhost:5510 öffnen. Alternativ `npx serve` o. Ä.
+Danach http://localhost:5510 öffnen.
 
-## Daten & Synchronisation
+## 🤖 KI-Coach einrichten
 
-Jeder Datensatz (Übung/Workout) trägt ein `updatedAt` und wird nie hart
-gelöscht, sondern als **Tombstone** (`deleted: true`) markiert. Beim Sync wird
-der Remote-Stand geholt und **pro Datensatz** zusammengeführt – das jüngste
-`updatedAt` gewinnt. Dadurch gibt es keinen „last-write-wins"-Datenverlust,
-wenn zwei Geräte parallel geändert haben, und eine Löschung bleibt bestehen.
+Die KI läuft über einen winzigen Proxy, damit der API-Key **nie in den Browser** gelangt.
+Komplette Schritt-für-Schritt-Anleitung: **[`worker/README.md`](worker/README.md)** — kurz:
 
-## Sicherheit (ehrlich)
+1. Anthropic-API-Key besorgen (+ Spend-Limit als Kostenbremse).
+2. [`worker/deno-deploy.js`](worker/deno-deploy.js) bei **Deno Deploy** deployen, `ANTHROPIC_API_KEY` als Secret setzen.
+3. Die Proxy-URL in [`src/coach.js`](src/coach.js) bei `AI_ENDPOINT` eintragen.
 
-Dies ist eine **statische Seite ohne Server**. Das Login ist deshalb eine
-Komfort-Hürde, kein echter Zugriffsschutz: Es liegen **keine Klartext-Passwörter**
-mehr im Code (nur SHA-256-Hashes), aber ein clientseitiges Login lässt sich
-technisch immer umgehen. Was die Daten tatsächlich schützt, ist der private
-**GitHub-Token**. Für echte Authentifizierung bräuchte es ein Backend.
+## 🔐 Sicherheit (ehrlich)
 
-## Lizenz
+Dies ist eine **statische Seite ohne eigenen Server**. Das Login ist deshalb eine Komfort-Hürde,
+kein echter Zugriffsschutz: Es liegen **keine Klartext-Passwörter** im Code (nur SHA-256-Hashes),
+aber ein clientseitiges Login lässt sich technisch immer umgehen. Was die Daten tatsächlich
+schützt, ist der private **GitHub-Token**; der KI-Key liegt server-seitig im Proxy. Für echte
+Mehrbenutzer-Authentifizierung bräuchte es ein Backend.
+
+## 📄 Lizenz
 
 [MIT](LICENSE)

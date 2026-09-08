@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" width="720" height="220" role="img" aria-label="GYM TRACKER">
+  <defs>
+    <linearGradient id="gtShine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#eaffb0" stop-opacity="0"/>
+      <stop offset="0.42" stop-color="#eaffb0" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#f4ffd6" stop-opacity="0.92"/>
+      <stop offset="0.58" stop-color="#eaffb0" stop-opacity="0"/>
+      <stop offset="1" stop-color="#eaffb0" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="gtWord">
+      <text x="360" y="118" text-anchor="middle" font-family="'Arial Black','Segoe UI',Helvetica,Arial,sans-serif" font-weight="800" font-size="70" letter-spacing="-1">GYMTRACKER</text>
+    </clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="720" height="220" rx="20" fill="#0d0d0d"/>
+
+  <!-- Wordmark -->
+  <text x="360" y="118" text-anchor="middle" font-family="'Arial Black','Segoe UI',Helvetica,Arial,sans-serif" font-weight="800" font-size="70" letter-spacing="-1">
+    <tspan fill="#f0f0f0">GYM</tspan><tspan fill="#c8ff00">TRACKER</tspan>
+  </text>
+
+  <!-- Shine-Sweep, auf die Wortmarke geclippt -->
+  <g clip-path="url(#gtWord)">
+    <rect x="0" y="40" width="240" height="120" fill="url(#gtShine)">
+      <animateTransform attributeName="transform" type="translate" from="-260 0" to="760 0" dur="3.4s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- Tagline -->
+  <text x="360" y="165" text-anchor="middle" font-family="'Segoe UI',Helvetica,Arial,sans-serif" font-weight="500" font-size="19" letter-spacing="0.5" fill="#8a8a8a">Krafttraining tracken · Web-App &amp; PWA</text>
+</svg>

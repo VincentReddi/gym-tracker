@@ -18,3 +18,6 @@ yarn-error.log*
 
 # Build output (falls je ein Build dazukommt)
 dist/
+
+# Lokales Dev-Tooling (Preview-Server)
+.claude/
