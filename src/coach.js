@@ -6,7 +6,7 @@ import { activeWorkouts, exerciseById, state } from './state.js';
 import { localDS, deDate, escapeHtml } from './utils.js';
 
 // >>> Nach dem Deploy des Workers hier die URL eintragen: <<<
-export const AI_ENDPOINT = 'https://gym-tracker.vincent-reddi.workers.dev/'; // z.B. 'https://gym-coach.deinname.workers.dev'
+export const AI_ENDPOINT = 'https://sunny-coyote-9490.vincentreddi.deno.net'; // Deno-Deploy-Proxy
 
 // --- Zeit-/Wochen-Helfer (Woche = Montag..Sonntag) ---
 function mondayOf(date) {
