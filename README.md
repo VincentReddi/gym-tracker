@@ -31,7 +31,7 @@ Läuft komplett im Browser, ohne Build-Schritt, offline-fähig, und synchronisie
   &nbsp;
   <img src="docs/screenshots/log.jpg" alt="Workout loggen" width="245" />
 </p>
-<p align="center"><sub>Dashboard mit KI-Karte &amp; Heatmap · KI-Wochenanalyse · Loggen mit Auto-Vorbelegung</sub></p>
+<p align="center"><sub>Dashboard &amp; Heatmap · KI-Wochenanalyse · Loggen mit Auto-Vorbelegung</sub></p>
 
 ## ✨ Features
 
