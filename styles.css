@@ -268,4 +268,31 @@ button { -webkit-tap-highlight-color: transparent; }
   color: var(--accent2);
 }
 
+/* Schmaler „Verlauf anzeigen"-Balken auf der Log-Seite */
+.history-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, transform 0.1s;
+}
+.history-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.history-link:active {
+  transform: scale(0.99);
+}
+
 

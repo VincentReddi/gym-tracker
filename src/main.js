@@ -96,6 +96,7 @@ function wireEvents() {
   document.getElementById('btn-add-set').addEventListener('click', addSet);
   document.getElementById('btn-save-workout').addEventListener('click', saveWorkout);
   document.getElementById('log-date').addEventListener('change', renderTodaySummary);
+  document.getElementById('btn-show-history').addEventListener('click', () => switchTab('history'));
   const setsC = document.getElementById('sets-container');
   setsC.addEventListener('input', (e) => {
     const t = e.target;

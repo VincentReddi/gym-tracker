@@ -1,25 +1,25 @@
 // "Was ist neu"-Screen – zeigt nach einem Update einmalig kompakt die Neuerungen.
 // Merkt sich die zuletzt gesehene Version in localStorage, damit er nur einmal erscheint.
 
-const APP_VERSION = '2.2';
+const APP_VERSION = '2.4';
 const SEEN_KEY = 'gym_seen_version';
 
 const NOTES = [
   {
+    icon: '🤖',
+    text: 'Neuer KI-Coach: Sonntags eine persönliche Analyse deiner Trainingswoche (ab 2 Trainings).',
+  },
+  {
+    icon: '⚡',
+    text: 'Jetzt als App installierbar – „Zum Homescreen hinzufügen", läuft im Vollbild und offline.',
+  },
+  {
+    icon: '📱',
+    text: 'Frische Navigation unten und flotteres, app-artiges Bedienen auf dem Handy.',
+  },
+  {
     icon: '🏋️',
-    text: 'Beim Loggen werden die Werte deines letzten Trainings dieser Übung automatisch vorausgefüllt – nur noch anpassen und speichern.',
-  },
-  {
-    icon: '🔄',
-    text: 'Zuverlässigere Synchronisation: keine verlorenen Einträge mehr, wenn du an mehreren Geräten trainierst.',
-  },
-  {
-    icon: '🗑️',
-    text: 'Eine Übung zu löschen entfernt jetzt sauber auch ihre Trainingseinträge – mit Sicherheitsabfrage.',
-  },
-  {
-    icon: '🔒',
-    text: 'Sichereres Login. Deine Anmeldung bleibt bestehen – du musst nichts neu einrichten.',
+    text: 'Beim Loggen werden die Werte deines letzten Trainings automatisch vorausgefüllt.',
   },
 ];
 
