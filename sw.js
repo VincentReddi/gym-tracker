@@ -16,6 +16,7 @@ const ASSETS = [
   './src/utils.js',
   './src/whatsnew.js',
   './src/coach.js',
+  './src/demo.js',
   './src/views/dashboard.js',
   './src/views/exercises.js',
   './src/views/log.js',

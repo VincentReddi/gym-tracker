@@ -13,7 +13,8 @@
 </p>
 
 <p align="center">
-  <b>🔗 <a href="https://vincentreddi.github.io/gym-tracker/">Live-Demo</a></b>
+  <b>🔗 <a href="https://vincentreddi.github.io/gym-tracker/?demo">Live-Demo ausprobieren</a></b><br>
+  <sub>startet mit Beispieldaten · Änderungen werden nicht gespeichert</sub>
 </p>
 
 Eine schlanke, **installierbare** Web-App zum Tracken von Krafttraining: Übungen anlegen,

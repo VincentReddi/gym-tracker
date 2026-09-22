@@ -88,6 +88,7 @@ function cacheKey(date = new Date()) {
   return `gym_analysis_${state.currentUser}_${weekKey(date)}`;
 }
 export function getCachedAnalysis(date = new Date()) {
+  if (state.demo) return state.demoAnalysis;
   try {
     return localStorage.getItem(cacheKey(date));
   } catch (e) {
@@ -103,6 +104,7 @@ function setCachedAnalysis(text, date = new Date()) {
 }
 
 export async function requestAnalysis(date = new Date()) {
+  if (state.demo) return state.demoAnalysis; // Demo: kein echter API-Aufruf
   if (!AI_ENDPOINT) throw new Error('not-configured');
   const res = await fetch(AI_ENDPOINT, {
     method: 'POST',

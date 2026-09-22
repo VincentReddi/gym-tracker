@@ -28,6 +28,8 @@ export const state = {
   gistFilename: 'gym_tracker_data.json',
   chartMode: 'weight',
   dashChartMode: 'weight',
+  demo: false, // Demo-Modus: nichts wird persistiert/synchronisiert
+  demoAnalysis: null,
 };
 
 // --- Normalisierung / Rückwärtskompatibilität ---
@@ -61,6 +63,7 @@ export const exerciseById = (id) => state.exercises.find((e) => e.id === id);
 
 // --- Persistenz ---
 export function persistLocal() {
+  if (state.demo) return; // im Demo-Modus nichts speichern
   localStorage.setItem(KEYS.exercises, JSON.stringify(state.exercises));
   localStorage.setItem(KEYS.workouts, JSON.stringify(state.workouts));
   localStorage.setItem(KEYS.cacheUser, state.currentUser || '');

@@ -33,6 +33,7 @@ export function setSyncStatus(msg, color) {
  * Lokal ist damit sofort persistent; die Netzwerk-Runde passiert gebündelt.
  */
 export function save() {
+  if (state.demo) return; // Demo: keine Persistenz, kein Sync
   persistLocal();
   clearTimeout(syncTimer);
   syncTimer = setTimeout(() => {
@@ -47,6 +48,7 @@ export function cancelPendingSync() {
 
 /** Voller Sync: erst pullen+mergen, dann den zusammengeführten Stand pushen. */
 export async function syncNow() {
+  if (state.demo) return;
   if (!state.token) {
     setSyncStatus('Kein Token – nur lokal', 'var(--danger)');
     return;

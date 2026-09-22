@@ -19,6 +19,7 @@ import { populateFilterSelect, renderHistory, deleteWorkout } from './views/hist
 import { populateChartSelect, setChartMode, renderChart } from './views/progress.js';
 import { maybeShowWhatsNew, dismissWhatsNew } from './whatsnew.js';
 import { renderCoach, renderCoachCard, generateAnalysis } from './coach.js';
+import { loadDemoData } from './demo.js';
 
 let currentTab = 'dashboard';
 
@@ -61,6 +62,27 @@ function afterLogin() {
   switchTab('dashboard');
   syncNow();
   maybeShowWhatsNew();
+}
+
+// Demo-Modus: vorbefüllte Daten, rein im Speicher (nichts wird gespeichert).
+function startDemo() {
+  state.demo = true;
+  state.currentUser = 'demo';
+  state.token = '';
+  loadDemoData();
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('header-user').textContent = 'Demo';
+  document.getElementById('demo-banner').style.display = 'flex';
+  const ss = document.getElementById('sync-status');
+  if (ss) ss.textContent = '';
+  switchTab('dashboard');
+}
+
+function exitDemo() {
+  state.demo = false;
+  state.demoAnalysis = null;
+  document.getElementById('demo-banner').style.display = 'none';
+  doLogout();
 }
 
 function wireEvents() {
@@ -137,6 +159,8 @@ function wireEvents() {
     if (e.key === 'Enter') doLogin();
   });
   document.getElementById('btn-reset-gist').addEventListener('click', resetGistId);
+  document.getElementById('btn-demo').addEventListener('click', startDemo);
+  document.getElementById('btn-demo-exit').addEventListener('click', exitDemo);
 
   // --- Aktivierung ---
   document.getElementById('btn-activate').addEventListener('click', checkActivation);
@@ -152,6 +176,10 @@ function boot() {
   initSync(refreshAfterSync);
   initAuth(afterLogin);
   wireEvents();
+  if (new URLSearchParams(location.search).has('demo')) {
+    startDemo();
+    return;
+  }
   bootSession();
 }
 

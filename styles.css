@@ -295,4 +295,40 @@ button { -webkit-tap-highlight-color: transparent; }
   transform: scale(0.99);
 }
 
+/* ===== Demo-Modus ===== */
+#demo-banner {
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 9px 16px;
+  background: rgba(200, 255, 0, 0.1);
+  border-bottom: 1px solid rgba(200, 255, 0, 0.3);
+  color: var(--text);
+  font-size: 13px;
+  text-align: center;
+}
+#demo-banner b {
+  color: var(--accent);
+}
+#btn-demo-exit {
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+#btn-demo-exit:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+#btn-demo:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 
