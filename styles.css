@@ -331,4 +331,48 @@ button { -webkit-tap-highlight-color: transparent; }
   color: var(--accent);
 }
 
+/* ===== Feinschliff / Desktop ===== */
+
+/* Dezenter Hintergrund-Glow für etwas Tiefe (statt flachem Schwarz) */
+body {
+  background:
+    radial-gradient(1000px 460px at 50% -60px, rgba(200, 255, 0, 0.05), transparent 70%),
+    var(--bg);
+}
+
+/* Coach als Top-Tab hervorheben */
+.tab.tab-coach:not(.active) {
+  color: var(--accent2);
+}
+
+@media (min-width: 880px) {
+  main {
+    max-width: 920px;
+    padding: 2.25rem 2rem 3rem;
+  }
+
+  /* Karten reagieren dezent auf Hover */
+  .card {
+    transition: border-color 0.15s ease;
+  }
+  .card:hover {
+    border-color: var(--border2);
+  }
+
+  /* Dashboard: zweispaltig, damit die Breite genutzt wird */
+  #tab-dashboard.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  #tab-dashboard.active > .card {
+    margin-bottom: 0;
+  }
+  /* Coach-Karte, Heatmap und Monatskennzahlen über die volle Breite */
+  #tab-dashboard.active > .card:nth-child(-n + 3) {
+    grid-column: 1 / -1;
+  }
+}
+
 
