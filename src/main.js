@@ -76,6 +76,7 @@ function startDemo() {
   const ss = document.getElementById('sync-status');
   if (ss) ss.textContent = '';
   switchTab('dashboard');
+  document.getElementById('demo-intro').style.display = 'flex';
 }
 
 function exitDemo() {
@@ -161,6 +162,9 @@ function wireEvents() {
   document.getElementById('btn-reset-gist').addEventListener('click', resetGistId);
   document.getElementById('btn-demo').addEventListener('click', startDemo);
   document.getElementById('btn-demo-exit').addEventListener('click', exitDemo);
+  document.getElementById('btn-demo-intro-ok').addEventListener('click', () => {
+    document.getElementById('demo-intro').style.display = 'none';
+  });
 
   // --- Aktivierung ---
   document.getElementById('btn-activate').addEventListener('click', checkActivation);
